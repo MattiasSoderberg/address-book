@@ -3,6 +3,7 @@ package dev.mattiassoderberg.addressbook.controller;
 import dev.mattiassoderberg.addressbook.model.Address;
 import dev.mattiassoderberg.addressbook.repository.AddressRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +22,10 @@ public class AddressController {
     @GetMapping
     public List<Address> findAll() {
         return repository.findAll();
+    }
+
+    @GetMapping("/{name}")
+    public Address findByName(@PathVariable String name) {
+        return repository.findByName(name);
     }
 }
