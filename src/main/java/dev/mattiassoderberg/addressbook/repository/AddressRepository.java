@@ -31,4 +31,8 @@ public class AddressRepository {
         int i = addresses.indexOf(existing);
         addresses.set(i, address);
     }
+
+    public void delete(String id) {
+        addresses.removeIf(address -> address.getId().equals(id));
+    }
 }
