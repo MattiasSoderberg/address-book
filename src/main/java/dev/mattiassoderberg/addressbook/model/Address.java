@@ -2,18 +2,28 @@ package dev.mattiassoderberg.addressbook.model;
 
 public class Address {
 
+    private String id;
     private String name;
     private String street;
     private String zipCode;
     private String area;
     private String city;
 
-    public Address(String name, String street, String zipCode, String area, String city) {
+    public Address(String id, String name, String street, String zipCode, String area, String city) {
+        this.id = id;
         this.name = name;
         this.street = street;
         this.zipCode = zipCode;
         this.area = area;
         this.city = city;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
