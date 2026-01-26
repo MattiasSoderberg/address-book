@@ -32,4 +32,10 @@ public class AddressController {
     public Address create(@RequestBody Address address) {
         return repository.create(address);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}")
+    public void update(@RequestBody Address address, @PathVariable String id) {
+        repository.update(address, id);
+    }
 }
