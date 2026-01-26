@@ -2,10 +2,8 @@ package dev.mattiassoderberg.addressbook.controller;
 
 import dev.mattiassoderberg.addressbook.model.Address;
 import dev.mattiassoderberg.addressbook.repository.AddressRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +25,11 @@ public class AddressController {
     @GetMapping("/{name}")
     public Address findByName(@PathVariable String name) {
         return repository.findByName(name);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public Address create(@RequestBody Address address) {
+        return repository.create(address);
     }
 }
