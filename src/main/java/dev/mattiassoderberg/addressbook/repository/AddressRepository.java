@@ -18,4 +18,9 @@ public class AddressRepository {
     public Address findByName(String name) {
         return addresses.stream().filter(address -> address.getName().equals(name)).findFirst().orElseThrow();
     }
+
+    public Address create(Address address) {
+        addresses.add(address);
+        return address;
+    }
 }
