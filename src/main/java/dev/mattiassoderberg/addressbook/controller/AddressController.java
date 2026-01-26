@@ -38,4 +38,10 @@ public class AddressController {
     public void update(@RequestBody Address address, @PathVariable String id) {
         repository.update(address, id);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        repository.delete(id);
+    }
 }
