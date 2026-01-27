@@ -61,6 +61,16 @@ class AddressControllerTest {
     }
 
     @Test
+    void getOneAddressByNameReturnAddress() throws Exception {
+        when(repository.findByName(address.getName())).thenReturn(address);
+        String uri = "/addresses/" + address.getName();
+
+        mockMvc.perform(get(uri))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(address.getName())));
+    }
+
+    @Test
     void createAddressReturnAddressAndStatusIsCreated() throws Exception {
         when(repository.create(any(Address.class))).thenReturn(address);
 
