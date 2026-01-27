@@ -5,14 +5,17 @@ import dev.mattiassoderberg.addressbook.repository.AddressRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +28,9 @@ class AddressControllerTest {
 
     @MockitoBean
     private AddressRepository repository;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     private final Address address = new Address(
             "testId123",
@@ -52,5 +58,16 @@ class AddressControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(jsonPath("$", is(instanceOf(ArrayList.class))));
+    }
+
+    @Test
+    void createAddressReturnAddressAndStatusIsCreated() throws Exception {
+        when(repository.create(any(Address.class))).thenReturn(address);
+
+        mockMvc.perform(post("/addresses")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsBytes(address)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(address.getId())));
     }
 }
