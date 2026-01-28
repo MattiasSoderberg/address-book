@@ -1,5 +1,6 @@
 package dev.mattiassoderberg.addressbook.repository;
 
+import dev.mattiassoderberg.addressbook.exception.AddressNotFoundException;
 import dev.mattiassoderberg.addressbook.model.Address;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +16,8 @@ public class AddressRepository {
         return addresses;
     }
 
-    public Address findByName(String name) {
-        return addresses.stream().filter(address -> address.getName().equals(name)).findFirst().orElseThrow();
+    public Address findByName(String name) throws AddressNotFoundException {
+        return addresses.stream().filter(address -> address.getName().equals(name)).findFirst().orElseThrow(AddressNotFoundException::new);
     }
 
     public Address create(Address address) {

@@ -1,5 +1,6 @@
 package dev.mattiassoderberg.addressbook.controller;
 
+import dev.mattiassoderberg.addressbook.exception.AddressNotFoundException;
 import dev.mattiassoderberg.addressbook.model.Address;
 import dev.mattiassoderberg.addressbook.repository.AddressRepository;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class AddressController {
     }
 
     @GetMapping("/{name}")
-    public Address findByName(@PathVariable String name) {
+    public Address findByName(@PathVariable String name) throws AddressNotFoundException {
         return repository.findByName(name);
     }
 
