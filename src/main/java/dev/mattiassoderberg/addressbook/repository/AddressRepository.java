@@ -25,12 +25,14 @@ public class AddressRepository {
         return address;
     }
 
-    public void update(Address address, String id) {
+    public Address update(Address address, String id) throws AddressNotFoundException {
         Address existing = addresses.stream().filter(a -> a.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Address not found"));
+                .orElseThrow(AddressNotFoundException::new);
         int i = addresses.indexOf(existing);
         addresses.set(i, address);
+
+        return addresses.get(i);
     }
 
     public void delete(String id) {

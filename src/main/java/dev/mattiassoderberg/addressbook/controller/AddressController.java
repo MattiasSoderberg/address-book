@@ -34,10 +34,9 @@ public class AddressController {
         return repository.create(address);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void update(@RequestBody Address address, @PathVariable String id) {
-        repository.update(address, id);
+    public Address update(@RequestBody Address address, @PathVariable String id) throws AddressNotFoundException {
+        return repository.update(address, id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
