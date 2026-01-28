@@ -1,5 +1,6 @@
 package dev.mattiassoderberg.addressbook.controller;
 
+import dev.mattiassoderberg.addressbook.exception.AddressNotFoundException;
 import dev.mattiassoderberg.addressbook.model.Address;
 import dev.mattiassoderberg.addressbook.repository.AddressRepository;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,17 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -68,6 +74,18 @@ class AddressControllerTest {
         mockMvc.perform(get(uri))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(address.getName())));
+    }
+
+
+    @Test
+    void getOneAddressByNameThrowExceptionIfNotExist() throws Exception {
+        String name = "nameThatNotExists";
+        when(repository.findByName(name)).thenThrow(new AddressNotFoundException());
+        ResultActions result = mockMvc.perform(get("/addresses/" + name))
+                .andExpect(status().isNotFound());
+
+        assertEquals(AddressNotFoundException.class,
+                Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
     }
 
     @Test
