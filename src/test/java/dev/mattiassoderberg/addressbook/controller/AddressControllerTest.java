@@ -41,7 +41,7 @@ class AddressControllerTest {
             "0701234567",
             "Test Street",
             "12345",
-            "Test Area");
+            "Test City");
 
     @Test
     void getAddressesReturnAllAddresses() throws Exception {
@@ -117,5 +117,27 @@ class AddressControllerTest {
 
         assertEquals(MethodArgumentNotValidException.class,
                 Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
+    }
+
+    @Test
+    void updateAddressReturnStatusOkAndUpdatedAddress() throws Exception {
+        Address updatedAddress = new Address(
+                address.getId(),
+                "updated name",
+                "0987654321",
+                address.getStreet(),
+                address.getZipCode(),
+                address.getCity()
+        );
+
+        when(repository.update(any(Address.class), any(String.class))).thenReturn(updatedAddress);
+
+        mockMvc.perform(put("/addresses/" + address.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsBytes(updatedAddress)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(address.getId())))
+                .andExpect(jsonPath("$.name", is(updatedAddress.getName())))
+                .andExpect(jsonPath("$.phone", is(updatedAddress.getPhone())));
     }
 }
