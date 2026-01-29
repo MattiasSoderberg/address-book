@@ -3,6 +3,7 @@ package dev.mattiassoderberg.addressbook.controller;
 import dev.mattiassoderberg.addressbook.exception.AddressNotFoundException;
 import dev.mattiassoderberg.addressbook.model.Address;
 import dev.mattiassoderberg.addressbook.repository.AddressRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class AddressController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Address create(@RequestBody Address address) {
+    public Address create(@Valid @RequestBody Address address) {
         return repository.create(address);
     }
 
