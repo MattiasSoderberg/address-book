@@ -140,4 +140,26 @@ class AddressControllerTest {
                 .andExpect(jsonPath("$.name", is(updatedAddress.getName())))
                 .andExpect(jsonPath("$.phone", is(updatedAddress.getPhone())));
     }
+
+    @Test
+    void updateAddressThrowExceptionWhenNotFound() throws Exception {
+        Address updatedAddress = new Address(
+                address.getId(),
+                "updated name",
+                "0987654321",
+                address.getStreet(),
+                address.getZipCode(),
+                address.getCity()
+        );
+
+        when(repository.update(any(Address.class), any(String.class))).thenThrow(new AddressNotFoundException());
+
+        ResultActions result = mockMvc.perform(put("/addresses/nonValidId")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsBytes(updatedAddress)))
+                .andExpect(status().isNotFound());
+
+        assertEquals(AddressNotFoundException.class,
+                Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
+    }
 }
