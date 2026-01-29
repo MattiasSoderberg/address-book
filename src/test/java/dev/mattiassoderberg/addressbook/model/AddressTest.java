@@ -12,12 +12,12 @@ class AddressTest {
     void createAddress() {
         String id = UUID.randomUUID().toString();
         String name = "Test";
+        String phone = "0701234567";
         String street = "Test street";
         String zipCode = "123 45";
-        String area = "Test area";
         String city = "Testville";
 
-        Address address = new Address(id, name, street, zipCode, city);
+        Address address = new Address(id, name, phone, street, zipCode, city);
 
         assertNotNull(address);
         assertEquals(street, address.getStreet());

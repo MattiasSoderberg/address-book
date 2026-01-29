@@ -4,13 +4,15 @@ public class Address {
 
     private String id;
     private String name;
+    private String phone;
     private String street;
     private String zipCode;
     private String city;
 
-    public Address(String id, String name, String street, String zipCode, String city) {
+    public Address(String id, String name, String Phone, String street, String zipCode, String city) {
         this.id = id;
         this.name = name;
+        this.phone = phone;
         this.street = street;
         this.zipCode = zipCode;
         this.city = city;
@@ -30,6 +32,14 @@ public class Address {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getStreet() {

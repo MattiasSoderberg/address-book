@@ -41,6 +41,7 @@ class AddressControllerTest {
     private final Address address = new Address(
             "testId123",
             "Test Tester",
+            "0701234567",
             "Test Street",
             "123 45",
             "Test Area");
