@@ -10,16 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,7 +40,7 @@ class AddressControllerTest {
             "Test Tester",
             "0701234567",
             "Test Street",
-            "123 45",
+            "12345",
             "Test Area");
 
     @Test
@@ -97,5 +94,28 @@ class AddressControllerTest {
                 .content(mapper.writeValueAsBytes(address)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(address.getId())));
+    }
+
+    @Test
+    void createAddressReturnBadRequestAndThrowsExceptionWhenAddressNotValid() throws Exception {
+        String id = UUID.randomUUID().toString();
+        String name = "Test";
+        String phone = "070123456783754638327";
+        String street = "Test street";
+        String zipCode = "123 456 789";
+        String city = "";
+
+        Address nonValidAddress = new Address(id, name, phone, street, zipCode, city);
+
+        ResultActions result = mockMvc.perform(post("/addresses")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsBytes(nonValidAddress)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.phone", is("Phone number must be 10 digits")))
+                .andExpect(jsonPath("$.zipCode", is("Zip Code must be 5 digits")))
+                .andExpect(jsonPath("$.city", is("City is required")));
+
+        assertEquals(MethodArgumentNotValidException.class,
+                Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
     }
 }
