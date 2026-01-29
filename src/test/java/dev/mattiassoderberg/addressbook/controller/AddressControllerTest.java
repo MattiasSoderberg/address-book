@@ -162,4 +162,26 @@ class AddressControllerTest {
         assertEquals(AddressNotFoundException.class,
                 Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
     }
+
+    @Test
+    void updateAddressReturnBadRequestAndThrowsExceptionWithInvalidData() throws Exception {
+        Address updatedAddress = new Address(
+                address.getId(),
+                "",
+                "098765432187654",
+                address.getStreet(),
+                address.getZipCode(),
+                address.getCity()
+        );
+
+        ResultActions result = mockMvc.perform(put("/addresses/" + address.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsBytes(updatedAddress)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name", is("Name is required")))
+                .andExpect(jsonPath("$.phone", is("Phone number must be 10 digits")));
+
+        assertEquals(MethodArgumentNotValidException.class,
+                Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
+    }
 }
