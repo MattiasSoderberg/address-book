@@ -6,15 +6,13 @@ public class Address {
     private String name;
     private String street;
     private String zipCode;
-    private String area;
     private String city;
 
-    public Address(String id, String name, String street, String zipCode, String area, String city) {
+    public Address(String id, String name, String street, String zipCode, String city) {
         this.id = id;
         this.name = name;
         this.street = street;
         this.zipCode = zipCode;
-        this.area = area;
         this.city = city;
     }
 
@@ -48,14 +46,6 @@ public class Address {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
     }
 
     public String getCity() {

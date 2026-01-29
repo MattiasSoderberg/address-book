@@ -17,7 +17,7 @@ class AddressTest {
         String area = "Test area";
         String city = "Testville";
 
-        Address address = new Address(id, name, street, zipCode, area, city);
+        Address address = new Address(id, name, street, zipCode, city);
 
         assertNotNull(address);
         assertEquals(street, address.getStreet());

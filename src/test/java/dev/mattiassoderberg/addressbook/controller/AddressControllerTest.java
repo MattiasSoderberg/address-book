@@ -43,8 +43,7 @@ class AddressControllerTest {
             "Test Tester",
             "Test Street",
             "123 45",
-            "Test Area",
-            "Test City");
+            "Test Area");
 
     @Test
     void getAddressesReturnAllAddresses() throws Exception {
