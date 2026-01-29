@@ -36,7 +36,7 @@ public class AddressController {
     }
 
     @PutMapping("/{id}")
-    public Address update(@RequestBody Address address, @PathVariable String id) throws AddressNotFoundException {
+    public Address update(@Valid @RequestBody Address address, @PathVariable String id) throws AddressNotFoundException {
         return repository.update(address, id);
     }
 
