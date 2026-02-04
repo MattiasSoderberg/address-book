@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </AppLink>
           </header>
           <div className="w-full h-full flex pt-20">
-            <aside className="min-w-[350px] h-full bg-gray-100 border-r border-gray-300 relative">
+            <aside className="min-w-[300px] h-full bg-gray-100 border-r border-gray-300 relative">
               <div className="flex justify-between items-center border-b border-gray-300 p-4">
                 <h2 className="text-2xl">Contacts</h2>
                 <AppLink to="contacts/new" variant="button" className="p-1">
