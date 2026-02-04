@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Dropzone, { useDropzone, type FileRejection } from "react-dropzone";
+import React, { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import type { Contact } from "~/shared.types";
 import { cn } from "~/utils";
-import ContactImage from "./contactImage";
+import Cropper, { type Area, type Point } from "react-easy-crop";
 
 export interface Errors extends Omit<Contact, "id"> {
   [key: string]: string | undefined;
@@ -24,27 +24,34 @@ export const TextInput = ({
   errors,
 }: Props) => {
   return (
-    <label className="max-w-4/5 grid grid-cols-7 items-end text-lg gap-4 mb-4">
-      {label}:{" "}
-      <input
-        type={type}
-        name={name}
-        defaultValue={defaultValue}
-        className={cn(
-          "col-span-3 p-1 border border-gray-300 rounded",
-          errors && errors[name] ? "border-red-500" : "",
-        )}
-      />
-      {errors && (
-        <p className="col-span-3 text-red-500 text-sm">{errors[name]}</p>
+    <div className="w-full relative">
+      <label className="w-full flex flex-col">
+        {label}
+        <input
+          type={type}
+          name={name}
+          defaultValue={defaultValue}
+          className={cn(
+            "p-1 border border-gray-300 rounded",
+            errors && errors[name] ? "border-red-500" : "",
+          )}
+        />
+      </label>
+      {errors && errors[name] && (
+        <p className="absolute -bottom-5 left-0 text-red-400 text-sm">
+          {errors[name]}
+        </p>
       )}
-    </label>
+    </div>
   );
 };
 
 export const FileInput = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: { "image/*": [] },
@@ -53,6 +60,10 @@ export const FileInput = () => {
     onDropRejected: (rejectedFiles) =>
       setError(rejectedFiles[0].errors[0].message),
   });
+
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+    console.log(croppedArea, croppedAreaPixels);
+  };
 
   useEffect(() => {
     return () => {
@@ -63,29 +74,53 @@ export const FileInput = () => {
   }, [imageUrl]);
 
   return (
-    <section className="w-full flex flex-col gap-4 mt-10">
-      <h3 className="text-lg">Image</h3>
-      <div className="w-full max-w-4/5 flex items-center">
-        <div className="w-full justify-between">
+    <section className="size-full flex flex-col gap-6">
+      <label className="">
+        Image
+        <div className="w-full justify-between relative">
           <div
             {...getRootProps()}
-            className="max-w-[400px] h-[70px] flex justify-center items-center bg-gray-100 border border-gray-300 rounded-xl"
+            className="min-h-24 flex justify-center items-center bg-gray-100 border border-gray-300 rounded"
           >
             <input {...getInputProps()} />
             <p>Drop your image file here</p>
+            {error && (
+              <p className="text-sm text-red-400 absolute -bottom-5 left-0">
+                {error}
+              </p>
+            )}
           </div>
         </div>
-        {imageUrl && <ContactImage imageUrl={imageUrl} />}
-      </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      </label>
+      {imageUrl && (
+        <div className="w-full h-full relative rounded overflow-hidden">
+          <Cropper
+            image={imageUrl}
+            crop={crop}
+            zoom={zoom}
+            aspect={1 / 1}
+            cropShape="round"
+            showGrid={false}
+            onCropChange={setCrop}
+            onCropComplete={onCropComplete}
+            onZoomChange={setZoom}
+          />
+        </div>
+      )}
     </section>
   );
 };
 
 export const InputColumnWrapper = ({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) => {
-  return <div className="flex flex-col gap-4">{children}</div>;
+  return (
+    <div className={cn("w-full flex flex-col items-start gap-6", className)}>
+      {children}
+    </div>
+  );
 };
