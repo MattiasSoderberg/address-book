@@ -1,6 +1,6 @@
 import React from "react";
 import { Form } from "react-router";
-import Input, { type Errors } from "./input";
+import { TextInput, FileInput, type Errors } from "./input";
 import Button from "./button";
 import type { Contact } from "~/shared.types";
 
@@ -19,41 +19,42 @@ const FormComponent = ({
 }: Props) => {
   return (
     <Form className="" action={action} method="post">
-      <Input
+      <TextInput
         label="Name"
         type="text"
         name="name"
         defaultValue={contact?.name}
         errors={errors}
       />
-      <Input
+      <TextInput
         label="Phone"
         type="text"
         name="phone"
         defaultValue={contact?.phone}
         errors={errors}
       />
-      <Input
+      <TextInput
         label="Street"
         type="text"
         name="street"
         defaultValue={contact?.street}
         errors={errors}
       />
-      <Input
+      <TextInput
         label="Zip Code"
         type="text"
         name="zipCode"
         defaultValue={contact?.zipCode}
         errors={errors}
       />
-      <Input
+      <TextInput
         label="City"
         type="text"
         name="city"
         defaultValue={contact?.city}
         errors={errors}
       />
+      <FileInput />
       <Button type="submit" className="mt-6 px-8">
         {buttonText}
       </Button>
