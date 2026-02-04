@@ -1,4 +1,5 @@
 import React from "react";
+import Dropzone from "react-dropzone";
 import type { Contact } from "~/shared.types";
 import { cn } from "~/utils";
 
@@ -14,7 +15,7 @@ type Props = {
   errors?: Errors;
 };
 
-const Input = ({
+export const TextInput = ({
   label,
   type = "text",
   name,
@@ -22,7 +23,7 @@ const Input = ({
   errors,
 }: Props) => {
   return (
-    <label className="max-w-4/5 grid grid-cols-7 items-center text-lg gap-4 mb-4">
+    <label className="max-w-4/5 grid grid-cols-7 items-end text-lg gap-4 mb-4">
       {label}:{" "}
       <input
         type={type}
@@ -40,4 +41,23 @@ const Input = ({
   );
 };
 
-export default Input;
+export const FileInput = () => {
+  return (
+    <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+      {({ getRootProps, getInputProps }) => (
+        <section className="w-full flex flex-col gap-4 mt-10">
+          <h3 className="text-lg">Image</h3>
+          <div className="max-w-4/5 grid grid-cols-7">
+            <div
+              {...getRootProps()}
+              className="col-span-4 h-[70px] flex justify-center items-center bg-gray-100 border border-gray-300 rounded-xl"
+            >
+              <input {...getInputProps()} />
+              <p>Drop your image file here</p>
+            </div>
+          </div>
+        </section>
+      )}
+    </Dropzone>
+  );
+};
