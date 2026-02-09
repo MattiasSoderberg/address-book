@@ -100,6 +100,19 @@ class AddressControllerTest {
     }
 
     @Test
+    void createAddressWithImageReturnStatusIsCreated() throws Exception {
+        MockMultipartFile mockAddress = new MockMultipartFile("address", null, "application/json",
+                mapper.writeValueAsBytes(address));
+        MockMultipartFile testImage = new MockMultipartFile("image", "image.png", "file", "a test image".getBytes());
+        when(repository.create(any(Address.class))).thenReturn(address);
+
+        mockMvc.perform(multipart("/addresses")
+                .file(mockAddress)
+                .file(testImage))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     void createAddressReturnBadRequestAndThrowsExceptionWhenAddressNotValid() throws Exception {
         String id = UUID.randomUUID().toString();
         String name = "";
