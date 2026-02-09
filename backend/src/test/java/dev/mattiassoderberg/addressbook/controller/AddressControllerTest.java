@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -86,20 +87,22 @@ class AddressControllerTest {
     }
 
     @Test
-    void createAddressReturnAddressAndStatusIsCreated() throws Exception {
+    void createAddressWithoutImageReturnAddressAndStatusIsCreated() throws Exception {
+        MockMultipartFile mockAddress = new MockMultipartFile("address", null, "application/json",
+                mapper.writeValueAsBytes(address));
+
         when(repository.create(any(Address.class))).thenReturn(address);
 
-        mockMvc.perform(post("/addresses")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapper.writeValueAsBytes(address)))
+        mockMvc.perform(multipart("/addresses")
+                .file(mockAddress))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(address.getId())));
+                .andExpect(jsonPath("$.id", is("testId123")));
     }
 
     @Test
     void createAddressReturnBadRequestAndThrowsExceptionWhenAddressNotValid() throws Exception {
         String id = UUID.randomUUID().toString();
-        String name = "Test";
+        String name = "";
         String phone = "070123456783754638327";
         String street = "Test street";
         String zipCode = "123 456 789";
@@ -107,13 +110,15 @@ class AddressControllerTest {
 
         Address nonValidAddress = new Address(id, name, phone, street, zipCode, city);
 
-        ResultActions result = mockMvc.perform(post("/addresses")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(mapper.writeValueAsBytes(nonValidAddress)))
+        MockMultipartFile mockAddress = new MockMultipartFile("address", null, "application/json",
+                mapper.writeValueAsBytes(nonValidAddress));
+
+        ResultActions result = mockMvc.perform(multipart("/addresses")
+                .file(mockAddress))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.phone", is("Phone number must be 10 digits")))
                 .andExpect(jsonPath("$.zipCode", is("Zip Code must be 5 digits")))
-                .andExpect(jsonPath("$.city", is("City is required")));
+                .andExpect(jsonPath("$.name", is("Name is required")));
 
         assertEquals(MethodArgumentNotValidException.class,
                 Objects.requireNonNull(result.andReturn().getResolvedException()).getClass());
