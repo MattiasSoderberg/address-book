@@ -2,10 +2,11 @@ package dev.mattiassoderberg.addressbook.model;
 
 import jakarta.validation.constraints.*;
 
+import java.util.UUID;
+
 public class Address {
 
-    @NotBlank(message = "ID is required")
-    private String id;
+    private final String id;
 
     @NotBlank(message = "Name is required")
     private String name;
@@ -20,8 +21,12 @@ public class Address {
 
     private String city;
 
-    public Address(String id, String name, String phone, String street, String zipCode, String city) {
-        this.id = id;
+    public Address() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public Address(String name, String phone, String street, String zipCode, String city) {
+        this();
         this.name = name;
         this.phone = phone;
         this.street = street;
@@ -31,10 +36,6 @@ public class Address {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
