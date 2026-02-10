@@ -33,7 +33,7 @@ public class AddressRepository {
         int i = addresses.indexOf(existing);
         addresses.set(i, address);
 
-        return address;
+        return existing;
     }
 
     public void delete(String id) {
