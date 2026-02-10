@@ -37,7 +37,6 @@ class AddressControllerTest {
     private ObjectMapper mapper;
 
     private final Address address = new Address(
-            "testId123",
             "Test Tester",
             "0701234567",
             "Test Street",
@@ -52,8 +51,7 @@ class AddressControllerTest {
         when(repository.findAll()).thenReturn(addressList);
         mockMvc.perform(get("/addresses"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is("testId123")));
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -95,8 +93,7 @@ class AddressControllerTest {
 
         mockMvc.perform(multipart("/addresses")
                 .file(mockAddress))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is("testId123")));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -114,14 +111,13 @@ class AddressControllerTest {
 
     @Test
     void createAddressReturnBadRequestAndThrowsExceptionWhenAddressNotValid() throws Exception {
-        String id = UUID.randomUUID().toString();
         String name = "";
         String phone = "070123456783754638327";
         String street = "Test street";
         String zipCode = "123 456 789";
         String city = "";
 
-        Address nonValidAddress = new Address(id, name, phone, street, zipCode, city);
+        Address nonValidAddress = new Address(name, phone, street, zipCode, city);
 
         MockMultipartFile mockAddress = new MockMultipartFile("address", null, "application/json",
                 mapper.writeValueAsBytes(nonValidAddress));
@@ -140,7 +136,6 @@ class AddressControllerTest {
     @Test
     void updateAddressReturnStatusOkAndUpdatedAddress() throws Exception {
         Address updatedAddress = new Address(
-                address.getId(),
                 "updated name",
                 "0987654321",
                 address.getStreet(),
@@ -154,7 +149,6 @@ class AddressControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsBytes(updatedAddress)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(address.getId())))
                 .andExpect(jsonPath("$.name", is(updatedAddress.getName())))
                 .andExpect(jsonPath("$.phone", is(updatedAddress.getPhone())));
     }
@@ -162,7 +156,6 @@ class AddressControllerTest {
     @Test
     void updateAddressThrowExceptionWhenNotFound() throws Exception {
         Address updatedAddress = new Address(
-                address.getId(),
                 "updated name",
                 "0987654321",
                 address.getStreet(),
@@ -184,7 +177,6 @@ class AddressControllerTest {
     @Test
     void updateAddressReturnBadRequestAndThrowsExceptionWithInvalidData() throws Exception {
         Address updatedAddress = new Address(
-                address.getId(),
                 "",
                 "098765432187654",
                 address.getStreet(),
