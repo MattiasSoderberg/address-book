@@ -48,6 +48,7 @@ public class ContactController {
 
     @GetMapping("/{id}/image")
     public ResponseEntity<Resource> getImage(@PathVariable String id) throws ImageNotFoundException {
+        // Fix filename extension so it's not hardcoded
         try {
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
