@@ -13,7 +13,7 @@ export async function action({ params, request }: Route.ActionArgs) {
     city: formData.get("city"),
   };
 
-  await fetch(`${process.env.BASE_API_URL}/addresses/${params.contactId}`, {
+  await fetch(`${process.env.BASE_API_URL}//${params.contactId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
