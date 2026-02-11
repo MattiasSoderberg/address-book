@@ -1,12 +1,16 @@
 package dev.mattiassoderberg.addressbook.controller;
 
 import dev.mattiassoderberg.addressbook.exception.ContactNotFoundException;
+import dev.mattiassoderberg.addressbook.exception.ImageNotFoundException;
 import dev.mattiassoderberg.addressbook.model.Contact;
 import dev.mattiassoderberg.addressbook.repository.ContactRepository;
 import dev.mattiassoderberg.addressbook.util.ImageUtil;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +44,17 @@ public class ContactController {
     @GetMapping("/{id}")
     public Contact findById(@PathVariable String id) throws ContactNotFoundException {
         return repository.findById(id);
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Resource> getImage(@PathVariable String id) throws ImageNotFoundException {
+        try {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(new UrlResource(uploadPath.resolve(id + ".jpg").toUri()));
+        } catch (Exception e) {
+            throw new ImageNotFoundException();
+        }
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
