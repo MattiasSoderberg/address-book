@@ -22,6 +22,7 @@ const FormComponent = ({
       className="flex justify-between gap-4 overflow-y-auto"
       action={action}
       method="post"
+      encType="multipart/form-data"
     >
       <InputColumnWrapper>
         <TextInput
@@ -63,7 +64,7 @@ const FormComponent = ({
           {buttonText}
         </Button>
       </InputColumnWrapper>
-      <FileInput />
+      <FileInput name="image" />
     </Form>
   );
 };
