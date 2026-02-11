@@ -66,23 +66,26 @@ public class ContactController {
                           @RequestParam(required = false) String cropX,
                           @RequestParam(required = false) String cropY) {
         Contact createdContact = repository.create(contact);
-        try {
-            BufferedImage croppedImage = ImageUtil.cropImageSquare(image.getBytes(),
-                    Integer.parseInt(cropSize),
-                    Integer.parseInt(cropX),
-                    Integer.parseInt(cropY));
-            String extension = ImageUtil.getExtension(image.getOriginalFilename());
-            String fileName = createdContact.getId() + "." + extension;
-            String filePath = Paths.get(uploadPath + "/" + fileName).toString();
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectory(uploadPath);
+        if (image != null && createdContact != null) {
+            try {
+                BufferedImage croppedImage = ImageUtil.cropImageSquare(image.getBytes(),
+                        Integer.parseInt(cropSize),
+                        Integer.parseInt(cropX),
+                        Integer.parseInt(cropY));
+                String extension = ImageUtil.getExtension(image.getOriginalFilename());
+                String fileName = createdContact.getId() + "." + extension;
+                String filePath = Paths.get(uploadPath + "/" + fileName).toString();
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectory(uploadPath);
+                }
+
+                File output = new File(filePath);
+                ImageIO.write(croppedImage, extension, output);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            File output = new File(filePath);
-            ImageIO.write(croppedImage, extension, output);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
         return createdContact;
