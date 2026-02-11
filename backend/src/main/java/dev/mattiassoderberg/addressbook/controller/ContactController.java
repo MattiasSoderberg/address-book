@@ -26,6 +26,8 @@ public class ContactController {
 
     ContactRepository repository;
 
+    private final Path uploadPath = Paths.get(System.getProperty("user.dir") + "/images");
+
     public ContactController(ContactRepository repository) {
         this.repository = repository;
     }
@@ -52,7 +54,6 @@ public class ContactController {
             BufferedImage croppedImage = ImageUtil.cropImageSquare(image.getBytes(), Integer.parseInt(cropSize), Integer.parseInt(cropX), Integer.parseInt(cropY));
             String extension = ImageUtil.getExtension(image.getOriginalFilename());
             String fileName = createdContact.getId() + "." + extension;
-            Path uploadPath = Paths.get(System.getProperty("user.dir") + "/images");
             String filePath = Paths.get(uploadPath + "/" + fileName).toString();
 
             if (!Files.exists(uploadPath)) {
