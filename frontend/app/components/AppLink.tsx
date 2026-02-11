@@ -20,7 +20,7 @@ const AppLink = ({
   const variantClasses = {
     default: "hover:underline hover:opacity-70",
     button:
-      "bg-blue-500 text-white px-4 py-2 rounded-xl inline-block hover:opacity-70",
+      "bg-blue-400 text-white px-4 py-2 rounded-xl inline-block hover:opacity-70",
   };
 
   return (
