@@ -66,7 +66,10 @@ public class ContactController {
                           @RequestParam(required = false) String cropY) {
         Contact createdContact = repository.create(contact);
         try {
-            BufferedImage croppedImage = ImageUtil.cropImageSquare(image.getBytes(), Integer.parseInt(cropSize), Integer.parseInt(cropX), Integer.parseInt(cropY));
+            BufferedImage croppedImage = ImageUtil.cropImageSquare(image.getBytes(),
+                    Integer.parseInt(cropSize),
+                    Integer.parseInt(cropX),
+                    Integer.parseInt(cropY));
             String extension = ImageUtil.getExtension(image.getOriginalFilename());
             String fileName = createdContact.getId() + "." + extension;
             String filePath = Paths.get(uploadPath + "/" + fileName).toString();
