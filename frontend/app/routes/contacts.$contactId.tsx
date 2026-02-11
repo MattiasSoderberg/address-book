@@ -1,22 +1,22 @@
 import { Form, Link, useLoaderData } from "react-router";
-import type { Route } from "./+types/contacts.$contactName";
+import type { Route } from "./+types/contacts.$contactId";
 import type { Contact } from "~/shared.types";
 import Button from "~/components/button";
 import AppLink from "~/components/AppLink";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
-    { title: params.contactName },
+    { title: params.contactId },
     {
       name: "description",
-      content: `Contact details for ${params.contactName}`,
+      content: `Contact details for ${params.contactId}`,
     },
   ];
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
   const response = await fetch(
-    `${process.env.BASE_API_URL}/addresses/${params.contactName}`,
+    `${process.env.BASE_API_URL}/contacts/${params.contactId}`,
   );
   const data = (await response.json()) as Contact;
 
@@ -37,7 +37,7 @@ export default function ContactDetails() {
       </div>
       <div className="flex justify-start items-center gap-4">
         <Form action={`/contacts/${data.id}/delete`} method="post">
-          <Button className="bg-red-500" type="submit">
+          <Button className="bg-red-400" type="submit">
             Delete
           </Button>
         </Form>
