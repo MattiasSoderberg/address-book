@@ -15,7 +15,7 @@ import { IoAddOutline } from "react-icons/io5";
 import AppLink from "./components/AppLink";
 
 export async function loader() {
-  const response = await fetch(`${process.env.BASE_API_URL}/addresses`);
+  const response = await fetch(`${process.env.BASE_API_URL}/contacts`);
   const data = (await response.json()) as Contact[];
 
   return data;
@@ -51,7 +51,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   data.map((contact) => (
                     <li key={contact.id}>
                       <AppLink
-                        to={`contacts/${contact.name}`}
+                        to={`contacts/${contact.id}`}
                         className="text-lg hover:opacity-70 hover:underline"
                       >
                         {contact.name}
