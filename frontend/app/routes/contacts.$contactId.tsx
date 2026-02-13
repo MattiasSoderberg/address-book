@@ -33,8 +33,8 @@ export default function ContactDetails() {
     useLoaderData();
 
   return (
-    <div className="w-full flex gap-10">
-      <div className="flex flex-col gap-4 p-4">
+    <div className="w-full flex items-start gap-10 p-4">
+      <div className="flex flex-col gap-4">
         <h2 className="text-3xl">{contact.name}</h2>
         <div className="mt-4 text-lg">
           <p className="mb-4">{contact.phone}</p>
