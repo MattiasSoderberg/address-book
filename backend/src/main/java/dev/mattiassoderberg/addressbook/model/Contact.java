@@ -12,12 +12,12 @@ public class Contact {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @Size(min = 10, max = 10, message = "Phone number must be 10 digits")
+//    @Size(min = 10, max = 10, message = "Phone number must be 10 digits")
     private String phone;
 
     private String street;
 
-    @Size(min = 5, max = 5, message = "Zip Code must be 5 digits")
+//    @Size(min = 5, max = 5, message = "Zip Code must be 5 digits")
     private String zipCode;
 
     private String city;
