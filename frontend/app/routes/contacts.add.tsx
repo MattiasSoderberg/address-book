@@ -66,7 +66,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function AddContact({ actionData }: Route.ComponentProps) {
   return (
-    <div className="size-full flex flex-col gap-10 p-4">
+    <div className="size-full flex flex-col gap-10 p-4 pr-10">
       <h2 className="text-2xl">Add Contact</h2>
       <FormComponent
         action="/contacts/new"
