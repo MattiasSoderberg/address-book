@@ -1,8 +1,9 @@
-import { Form, Link, useLoaderData } from "react-router";
+import { Form, useLoaderData } from "react-router";
 import type { Route } from "./+types/contacts.$contactId";
 import type { Contact } from "~/shared.types";
 import Button from "~/components/button";
 import AppLink from "~/components/AppLink";
+import ContactImage from "~/components/contactImage";
 
 export function meta({ params }: Route.MetaArgs) {
   return [
@@ -14,41 +15,58 @@ export function meta({ params }: Route.MetaArgs) {
   ];
 }
 
+// TODO fix image rendering
 export async function loader({ params }: Route.LoaderArgs) {
   const response = await fetch(
     `${process.env.BASE_API_URL}/contacts/${params.contactId}`,
   );
-  const data = (await response.json()) as Contact;
+  const contact = (await response.json()) as Contact;
 
-  return data;
+  const imageResponse = await fetch(
+    `${process.env.BASE_API_URL}/contacts/${params.contactId}/image`,
+    {
+      headers: {
+        "Content-Type": "",
+      },
+    },
+  );
+  // console.log(imageResponse.headers.get("content-type"));
+  const image = await imageResponse.blob();
+  // console.log(image);
+
+  return { contact, image: URL.createObjectURL(image) };
 }
 
 export default function ContactDetails() {
-  let data = useLoaderData();
+  const { contact, image }: { contact: Contact; image: string } =
+    useLoaderData();
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <h2 className="text-3xl">{data.name}</h2>
-      <div className="mt-4 text-lg">
-        <p className="mb-4">{data.phone}</p>
-        <p>{data.street}</p>
-        <p>
-          {data.zipCode} {data.city}
-        </p>
+    <div className="w-full flex gap-10">
+      <div className="flex flex-col gap-4 p-4">
+        <h2 className="text-3xl">{contact.name}</h2>
+        <div className="mt-4 text-lg">
+          <p className="mb-4">{contact.phone}</p>
+          <p>{contact.street}</p>
+          <p>
+            {contact.zipCode} {contact.city}
+          </p>
+        </div>
+        <div className="flex justify-start items-center gap-4">
+          <Form action={`/contacts/${contact.id}/delete`} method="post">
+            <Button className="bg-red-400" type="submit">
+              Delete
+            </Button>
+          </Form>
+          <AppLink
+            to={`/contacts/${contact.id}/edit`}
+            state={{ contact }}
+            variant="button"
+          >
+            Edit
+          </AppLink>
+        </div>
       </div>
-      <div className="flex justify-start items-center gap-4">
-        <Form action={`/contacts/${data.id}/delete`} method="post">
-          <Button className="bg-red-400" type="submit">
-            Delete
-          </Button>
-        </Form>
-        <AppLink
-          to={`/contacts/${data.id}/edit`}
-          state={{ contact: data }}
-          variant="button"
-        >
-          Edit
-        </AppLink>
-      </div>
+      {image && <ContactImage imageUrl={image} />}
     </div>
   );
 }
