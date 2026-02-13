@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import type { Contact } from "~/shared.types";
 import { cn } from "~/utils";
@@ -46,23 +46,43 @@ export const TextInput = ({
   );
 };
 
-export const FileInput = () => {
+export const FileInput = ({ name = "file" }: { name?: string }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
+  const hiddenFileInputRef = useRef<HTMLInputElement>(null);
+  const hiddenCropSizeInputRef = useRef<HTMLInputElement>(null);
+  const hiddenCropXInputRef = useRef<HTMLInputElement>(null);
+  const hiddenCropYInputRef = useRef<HTMLInputElement>(null);
+
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: { "image/*": [] },
-    onDropAccepted: (acceptedFiles) =>
-      setImageUrl(URL.createObjectURL(acceptedFiles[0])),
+    onDropAccepted: (acceptedFiles) => {
+      setImageUrl(URL.createObjectURL(acceptedFiles[0]));
+
+      if (hiddenFileInputRef?.current) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(acceptedFiles[0]);
+        hiddenFileInputRef.current.files = dataTransfer.files;
+      }
+    },
     onDropRejected: (rejectedFiles) =>
       setError(rejectedFiles[0].errors[0].message),
   });
 
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log(croppedArea, croppedAreaPixels);
+  const onCropComplete = (_croppedArea: Area, croppedAreaPixels: Area) => {
+    if (
+      hiddenCropSizeInputRef?.current &&
+      hiddenCropXInputRef?.current &&
+      hiddenCropYInputRef?.current
+    ) {
+      hiddenCropSizeInputRef.current.value = croppedAreaPixels.width.toString();
+      hiddenCropXInputRef.current.value = croppedAreaPixels.x.toString();
+      hiddenCropYInputRef.current.value = croppedAreaPixels.y.toString();
+    }
   };
 
   useEffect(() => {
@@ -77,19 +97,41 @@ export const FileInput = () => {
     <section className="size-full flex flex-col gap-6">
       <label className="">
         Image
-        <div className="w-full justify-between relative">
-          <div
-            {...getRootProps()}
-            className="min-h-24 flex justify-center items-center bg-gray-100 border border-gray-300 rounded"
-          >
-            <input {...getInputProps()} />
-            <p>Drop your image file here</p>
-            {error && (
-              <p className="text-sm text-red-400 absolute -bottom-5 left-0">
-                {error}
-              </p>
-            )}
-          </div>
+        <div
+          {...getRootProps()}
+          className="min-h-24 flex justify-center items-center bg-gray-100 border border-gray-300 rounded"
+        >
+          <input
+            type="text"
+            ref={hiddenCropSizeInputRef}
+            className="hidden"
+            name="cropSize"
+          />
+          <input
+            type="text"
+            ref={hiddenCropXInputRef}
+            className="hidden"
+            name="cropX"
+          />
+          <input
+            type="text"
+            ref={hiddenCropYInputRef}
+            className="hidden"
+            name="cropY"
+          />
+          <input
+            type="file"
+            ref={hiddenFileInputRef}
+            className="hidden"
+            name={name}
+          />
+          <input {...getInputProps()} />
+          <p>Drop your image file here</p>
+          {error && (
+            <p className="text-sm text-red-400 absolute -bottom-5 left-0">
+              {error}
+            </p>
+          )}
         </div>
       </label>
       {imageUrl && (
