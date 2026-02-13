@@ -15,7 +15,6 @@ export function meta({ params }: Route.MetaArgs) {
   ];
 }
 
-// TODO fix image rendering
 export async function loader({ params }: Route.LoaderArgs) {
   const response = await fetch(
     `${process.env.BASE_API_URL}/contacts/${params.contactId}`,
@@ -24,22 +23,15 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const imageResponse = await fetch(
     `${process.env.BASE_API_URL}/contacts/${params.contactId}/image`,
-    {
-      headers: {
-        "Content-Type": "",
-      },
-    },
   );
-  // console.log(imageResponse.headers.get("content-type"));
-  const image = await imageResponse.blob();
-  // console.log(image);
 
-  return { contact, image: URL.createObjectURL(image) };
+  return { contact, imageUrl: imageResponse.url };
 }
 
 export default function ContactDetails() {
-  const { contact, image }: { contact: Contact; image: string } =
+  const { contact, imageUrl }: { contact: Contact; imageUrl: string } =
     useLoaderData();
+
   return (
     <div className="w-full flex gap-10">
       <div className="flex flex-col gap-4 p-4">
@@ -66,7 +58,7 @@ export default function ContactDetails() {
           </AppLink>
         </div>
       </div>
-      {image && <ContactImage imageUrl={image} />}
+      {imageUrl && <ContactImage imageUrl={imageUrl} />}
     </div>
   );
 }
